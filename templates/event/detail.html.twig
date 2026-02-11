@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event Detail{% endblock %}
+
+{% block body %}
+<h1>{{ event.name }}</h1>
+
+<ul>
+    <li><strong>Date:</strong> {{ event.date }}</li>
+    <li><strong>Time:</strong> {{ event.time }}</li>
+    <li><strong>Location:</strong> {{ event.location }}</li>
+    <li><strong>Description:</strong> {{ event.description }}</li>
+</ul>
+
+<p>
+    <a href="{{ path('events_overview') }}">Back to overview</a>
+</p>
+
+{% endblock %}
