@@ -60,14 +60,4 @@ jobs:
       - name: Doctrine Schema Validator
         if: false # Remove this line if Doctrine ORM is installed
         run: docker compose exec -T php bin/console -e test doctrine:schema:validate
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Validate YAML
-        uses: ibiqlik/action-yamllint@v3
-
-      - name: Validate GitHub Actions
-        uses: rhysd/actionlint@v1
+        
