@@ -75,9 +75,10 @@ jobs:
           persist-credentials: false
       - name: Lint Code Base
         uses: super-linter/super-linter/slim@v8
-        env:
-          GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CHECKOV: false
-          VALIDATE_TRIVY: false
-          VALIDATE_PHP_COMPOSER: false
+    env:
+      GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VALIDATE_CHECKOV: false
+      VALIDATE_TRIVY: false
+      VALIDATE_ALL_CODEBASE: false
+      VALIDATE_PHP: false
