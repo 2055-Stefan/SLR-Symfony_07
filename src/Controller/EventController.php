@@ -9,7 +9,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class EventController extends AbstractController
 {
-    #[Route('/events/current', name: 'events_current')]
     public function current(EventService $eventService): Response
     {
         return $this->render('event/current.html.twig', [
@@ -25,11 +24,11 @@ final class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/{id}', name: 'events_detail')]
+    #[Route('/events/detail/{id}', name: 'events_detail')]
     public function detail(int $id, EventService $eventService): Response
     {
         $event = $eventService->getEventById($id);
-
+        
         if ($event === null) {
             throw $this->createNotFoundException('Event not found');
         }

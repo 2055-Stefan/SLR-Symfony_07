@@ -34,7 +34,7 @@ final class EventService
     // US 2
     public function getCurrentEvents(): array
     {
-        return array_values(array_slice($this->events, 0, 2, true));
+        return array_values(array_slice($this->events, 0, 2));
     }
 
     // US 3
