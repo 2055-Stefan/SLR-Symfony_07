@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Appointment;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<Appointment>
+ */
+class AppointmentRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Appointment::class);
+    }
+
+
+    // ===============================
+    // FILTER BY STATUS
+    // ===============================
+    public function findByStatus(string $status): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.status = :status')
+            ->setParameter('status', $status)
+            ->orderBy('a.startsAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    // ===============================
+    // FILTER BY EVENT
+    // ===============================
+    public function findByEvent(int $eventId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.event', 'e')
+            ->where('e.id = :eventId')
+            ->setParameter('eventId', $eventId)
+            ->orderBy('a.startsAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+    
+
+    // ===============================
+    // PAGINATION + SORTING
+    // ===============================
+    public function findPaginated(int $page, int $limit, ?string $status = null): array {
+
+        $qb = $this->createQueryBuilder('a');
+
+        if ($status) {
+            $qb->andWhere('a.status = :status')
+               ->setParameter('status', $status);
+        }
+
+        $qb->orderBy('a.startsAt', 'ASC')
+           ->setFirstResult(($page - 1) * $limit)
+           ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+
+
+
+    //    /**
+    //     * @return Appointment[] Returns an array of Appointment objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('a.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Appointment
+    //    {
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
+}

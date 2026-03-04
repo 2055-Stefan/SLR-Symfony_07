@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Municipality Portal{% endblock %}
+{% block title %}Welcome{% endblock %}
 
 {% block body %}
-    <div style="text-align:center; margin-top:50px;">
+   <div style="text-align:center; margin-top:50px;">
         {# <img src="{{ asset('images/logo.png') }}" alt="Municipality Logo" width="200">   
         andere Variante - Best Practive für Symfony, benötigt: docker compose exec php composer require symfony/asset
         #}
         <img src="/images/logo.png" alt="Municipality Logo" width="200">
 
-        <h1>{{ municipality_name }}</h1>
+        <h1>{{ home_name }}</h1>
         
         <p>Welcome to the official citizen portal.</p>
     </div>

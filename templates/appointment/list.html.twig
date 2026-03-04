@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filter Appointment{% endblock %}
+
+{% block body %}
+    <h1>Appointments</h1>
+
+    {% for appointment in appointments %}
+        <div>
+            {{ appointment.title }}
+            ({{ appointment.status }})
+            - {{ appointment.startsAt|date('Y-m-d H:i') }}
+            - Event: {{ appointment.event.name }}
+            <a href="{{ path('appointment_edit', {id: appointment.id}) }}">Edit</a>
+            <form method="post"
+                action="{{ path('appointment_delete', {id: appointment.id}) }}"
+                style="display:inline"
+                onsubmit="return confirm('Delete appointment?');">
+                <button>Delete</button>
+            </form>
+        </div>
+    {% else %}
+        <p>No appointments found.</p>
+    {% endfor %}
+
+    <div style="margin-bottom:20px">
+
+        <a href="{{ path('appointments_search', {status: ''}) }}">
+            <button>All appointments</button>
+        </a>
+        <a href="{{ path('appointments_search', {status: 'cancelled'}) }}">
+            <button>Cancelled appointments</button>
+        </a>
+        <a href="{{ path('appointments_search', {status: 'confirmed'}) }}">
+            <button>Confirmed appointments</button>
+        </a>
+        <a href="{{ path('appointments_search', {status: 'scheduled'}) }}">
+            <button>Scheduled appointments</button>
+        </a>
+    </div>
+    {% for appointment in appointments %}
+        
+    {% endfor %}
+{% endblock %}
+
+
