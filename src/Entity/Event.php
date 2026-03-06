@@ -8,7 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: EventRepository::class)]
+#[ORM\Table(name: 'event')]
+#[ORM\Index(columns: ['starts_at'], name: 'event_starts_at_idx')]
 class Event
 {
     #[ORM\Id]

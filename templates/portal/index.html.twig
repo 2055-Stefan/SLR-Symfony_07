@@ -7,7 +7,7 @@
    <div style="display: flex; justify-content: flex-end; gap: 20px; margin-bottom: 25px;">
 
         <a class="nav-link"
-        href="{{ path('new_appointment') }}"
+        href="{{ path('appointment_new') }}"
         style="border:1px solid #000000; padding: 8px 15px;">
             Create a new Appointment
         </a>
@@ -16,6 +16,12 @@
         href="{{ path('appointments_list') }}"
         style="border:1px solid #000000; padding: 8px 15px;">
             Show all Appointments
+        </a>
+
+        <a class="nav-link"
+        href="{{ path('app_upcoming_event') }}"
+        style="border:5px solid #825cd3; padding: 8px 15px;">
+            Show all Upcoming Events
         </a>
 
     </div>

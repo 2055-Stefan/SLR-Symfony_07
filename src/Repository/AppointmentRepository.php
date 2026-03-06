@@ -65,6 +65,13 @@ class AppointmentRepository extends ServiceEntityRepository
     }
 
 
+    public function countAppointments(): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
 
 

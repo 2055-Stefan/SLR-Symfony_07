@@ -16,6 +16,14 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
+    public function countNotifications(): int
+    {
+        return $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }   
+
     //    /**
     //     * @return Notification[] Returns an array of Notification objects
     //     */

@@ -10,11 +10,24 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Appointment;
 use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
+use App\Entity\UserActivity;
+
 
 
 final class AppointmentController extends AbstractController
 {
-    #[Route('/appointment/new', name: 'new_appointment')]
+    #[Route('/appointments', name: 'appointments_list')]
+    public function list(Request $request, AppointmentRepository $repository): Response {
+
+        $appointments = $repository->findAll();
+
+        return $this->render('appointment/list.html.twig', [
+            'appointments' => $appointments
+        ]);
+    }
+
+
+    #[Route('/appointment/new', name: 'appointment_new')]
     public function index(Request $request, EntityManagerInterface $em): Response {
 
         $appointment = new Appointment();
@@ -26,25 +39,20 @@ final class AppointmentController extends AbstractController
          if ($form->isSubmitted() && $form->isValid()) {
 
             $em->persist($appointment);
+
+            $activity = new UserActivity();
+            $activity->setAction("Appointment created");
+
+            $em->persist($activity);
+
             $em->flush();
 
             return $this->redirectToRoute('app_portal');
         }
 
 
-        return $this->render('appointment/index.html.twig', [
+        return $this->render('appointment/new.html.twig', [
             'form' => $form->createView(),
-        ]);
-    }
-
-
-    #[Route('/appointments', name: 'appointments_list')]
-    public function list(Request $request, AppointmentRepository $repository): Response {
-
-        $appointments = $repository->findAll();
-
-        return $this->render('appointment/list.html.twig', [
-            'appointments' => $appointments
         ]);
     }
 
@@ -69,7 +77,7 @@ final class AppointmentController extends AbstractController
         ]);
     }
 
-    #[Route('/appointments/{id}/edit', name: 'appointment_edit')]
+    #[Route('/appointment/{id}/edit', name: 'appointment_edit')]
     public function edit(Appointment $appointment, Request $request, EntityManagerInterface $em): Response {
 
         $form = $this->createForm(AppointmentType::class, $appointment);
@@ -77,6 +85,11 @@ final class AppointmentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $activity = new UserActivity();
+            $activity->setAction("Appointment updated");
+
+            $em->persist($activity);
 
             $em->flush();
 
@@ -88,10 +101,16 @@ final class AppointmentController extends AbstractController
         ]);
     }
 
-    #[Route('/appointments/{id}/delete', name: 'appointment_delete', methods: ['POST'])]
+    #[Route('/appointment/{id}/delete', name: 'appointment_delete', methods: ['POST'])]
     public function delete(Appointment $appointment, EntityManagerInterface $em): Response {
     
         $em->remove($appointment);
+
+        $activity = new UserActivity();
+        $activity->setAction("Appointment deleted");
+
+        $em->persist($activity);
+
         $em->flush();
 
         return $this->redirectToRoute('appointments_list');

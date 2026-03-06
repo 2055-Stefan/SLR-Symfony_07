@@ -6,6 +6,8 @@ docker compose exec php php bin/console doctrine:database:create
 docker compose exec php php bin/console make:entity [Citizen]
 docker compose exec php php bin/console make:migration
 
+docker compose exec php php bin/console make:controller UpcomingEventController
+
 
 
 
@@ -15,6 +17,9 @@ docker compose exec php php -m
 
 docker compose exec database psql -U app -d app -c "\dt"
 
+
+In die Datenbank und Queries ausführen: docker compose exec database psql -U app
+	z.B.: SELECT * FROM user_activity;
 
 Wenn Tabelle löschen willst:
 
@@ -143,9 +148,44 @@ dannach neu laden: docker compose exec php php bin/console doctrine:schema:updat
 
 User Story 9: Erweiterte Portal-Funktionen und Statistiken
 
+AC1:
+
+	Neue Funktion in Appointment-, Even- und NotificationRepository für Queries
+
+	docker compose exec php php bin/console make:controller StatisticsController
+
+	im Header: <a class="nav-link" href="{{ path('app_statistics') }}">Statistics</a>
+
+AC2:
+	docker compose exec php php bin/console make:entity UserActivity
+		action (string)
+		createdAt (datetime_immutable)
+
+	docker compose exec php php bin/console make:migration
+	docker compose exec php php bin/console doctrine:migrations:migrate
+
+	AppointmentController, bei new edit und delete:  $activity = new UserActivity();
+							$activity->setAction("Appointment created"); "Appointment edited","Appointment delete"
+
+							$em->persist($activity);
+
+	Entity/UserActivity.php: weil createdAt darf nciht null sein
+	public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
 
+AC3:
+	eventRepository.php: findupcomingevents();
 
+	docker compose exec php php bin/console make:controller UpcomingEventController
 
-
+AC4:
+	über die klasse: #[ORM\Entity(repositoryClass: EventRepository::class)]
+					 #[ORM\Table(name: 'event')]
+					 #[ORM\Index(columns: ['starts_at'], name: 'event_starts_at_idx')]
+	
+	docker compose exec php php bin/console make:migration
+	docker compose exec php php bin/console doctrine:migrations:migrate
 

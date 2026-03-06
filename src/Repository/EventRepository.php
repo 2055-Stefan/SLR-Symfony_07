@@ -16,6 +16,26 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function countAllEvents(): int
+    {
+        return $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
+    public function findUpcomingEvents()
+    {
+    return $this->createQueryBuilder('e')
+    
+        ->where('e.startsAt >= :today')
+        ->setParameter('today', new \DateTime())
+        ->orderBy('e.startsAt', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+
     //    /**
     //     * @return Event[] Returns an array of Event objects
     //     */
