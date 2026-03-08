@@ -1,0 +1,191 @@
+docker compose exec php composer require symfony/orm-pack
+docker compose exec php composer require --dev symfony/maker-bundle
+docker compose exec php composer require doctrine/doctrine-migrations-bundle
+
+docker compose exec php php bin/console doctrine:database:create
+docker compose exec php php bin/console make:entity [Citizen]
+docker compose exec php php bin/console make:migration
+
+docker compose exec php php bin/console make:controller UpcomingEventController
+
+
+
+
+docker compose exec php php bin/console doctrine:mapping:info
+
+docker compose exec php php -m
+
+docker compose exec database psql -U app -d app -c "\dt"
+
+
+In die Datenbank und Queries ausführen: docker compose exec database psql -U app
+	z.B.: SELECT * FROM user_activity;
+
+Wenn Tabelle löschen willst:
+
+sudo rm -rf src/Entity/Test.php
+sudo rm -rf src/Repository/TestRepository.php
+
+docker compose exec php php bin/console make:migration
+docker compose exec php php bin/console doctrine:migrations:migrate
+
+
+
+User Story 1: Symfony- und Doctrine-Projektsetup
+
+composer require symfony/orm-pack
+composer require --dev symfony/maker-bundle
+composer require doctrine/doctrine-migrations-bundle
+
+.env anpassen: DATABASE_URL="postgresql://app:!ChangeMe!@database:5432/app?serverVersion=16&charset=utf8"
+
+docker compose exec php php bin/console doctrine:database:create
+
+
+
+User Story 2: Erstellung der Doctrine-Entities
+
+docker compose exec php php bin/console make:entity --help ✓
+
+docker compose exec php php bin/console make:entity Appointment
+
+docker compose exec php php bin/console make:entity Event
+
+docker compose exec php php bin/console make:entity Notification
+
+Relationen erstellen:
+
+docker compose exec php php bin/console make:entity Appointment
+
+	property name: event
+
+	type: relation
+
+	relation type: ManyToOne
+
+	target entity: Event
+
+	nullable? no (empfohlen)
+
+
+docker compose exec php php bin/console make:entity Notification
+
+	property name: appointment
+
+	type: relation
+
+	relation type: ManyToOne
+
+	target entity: Appointment
+
+	nullable? no
+
+
+
+User Story 3: Datenbankschema und Migrationen
+
+docker compose exec php php bin/console make:migration
+docker compose exec php php bin/console doctrine:migrations:migrate
+
+docker compose exec php php bin/console doctrine:schema:validate
+
+
+User Story 4: Testdaten mit Fixtures einfügen
+
+docker compose exec php composer require --dev orm-fixtures
+docker compose exec php php bin/console make:fixture
+
+created: src/DataFixtures/AppFixtures.php
+
+Test data einfügen.
+
+WICHTIG: Beziehungen korrekt setzen: $appointment->setEvent($event);
+				     $notification->setAppointment($appointment);
+
+docker compose exec php php bin/console doctrine:fixtures:load
+
+reset: php bin/console doctrine:fixtures:load --purge-with-truncate
+
+
+User Story 5: Datenanzeige mit Symfony-Controller
+
+docker compose exec php php bin/console make:controller PortalController
+
+$events = $eventRepository->findAll();
+
+
+User Story 6: Appointments mit Symfony-Forms erstellen
+
+docker compose exec php php bin/console make:form AppointmentType
+
+erzeugt: src/Form/AppointmentType.php
+
+docker compose exec php php bin/console make:controller AppointmentController
+
+
+User Story 7: Custom Repository-Abfragen/ Filtern
+
+AppointmentRepository erweitern
+
+list.html.twig erstellt
+
+
+User Story 8: Edit und Delete
+
+Appointment Controller Edit Route + Funktion hinzugefügt
+
+edit.html.twig erstellt
+
+Appointment Controller Delete
+
+list.html.twig erweitert
+
+delte funktionier nicht, weil wenn du ein Appointment löscht musst du auch die dazugehörigen Notifications löschen:
+	in Entity/Notification.php:
+		    #[ORM\JoinColumn(onDelete: "CASCADE")]
+dannach neu laden: docker compose exec php php bin/console doctrine:schema:update --force
+
+
+User Story 9: Erweiterte Portal-Funktionen und Statistiken
+
+AC1:
+
+	Neue Funktion in Appointment-, Even- und NotificationRepository für Queries
+
+	docker compose exec php php bin/console make:controller StatisticsController
+
+	im Header: <a class="nav-link" href="{{ path('app_statistics') }}">Statistics</a>
+
+AC2:
+	docker compose exec php php bin/console make:entity UserActivity
+		action (string)
+		createdAt (datetime_immutable)
+
+	docker compose exec php php bin/console make:migration
+	docker compose exec php php bin/console doctrine:migrations:migrate
+
+	AppointmentController, bei new edit und delete:  $activity = new UserActivity();
+							$activity->setAction("Appointment created"); "Appointment edited","Appointment delete"
+
+							$em->persist($activity);
+
+	Entity/UserActivity.php: weil createdAt darf nciht null sein
+	public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+
+AC3:
+	eventRepository.php: findupcomingevents();
+
+	docker compose exec php php bin/console make:controller UpcomingEventController
+
+AC4:
+	über die klasse: #[ORM\Entity(repositoryClass: EventRepository::class)]
+					 #[ORM\Table(name: 'event')]
+					 #[ORM\Index(columns: ['starts_at'], name: 'event_starts_at_idx')]
+	
+	docker compose exec php php bin/console make:migration
+	docker compose exec php php bin/console doctrine:migrations:migrate
+

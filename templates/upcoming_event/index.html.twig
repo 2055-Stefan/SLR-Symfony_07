@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UpcomingEvent{% endblock %}
+
+{% block body %}
+    <h1>Upcoming Events</h1>
+
+    {% for event in events %}
+        <p>
+        {{ event.name }}
+        {{ event.startsAt|date('Y-m-d') }}
+        </p>
+    {% endfor %}
+{% endblock %}
