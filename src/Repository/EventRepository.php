@@ -23,18 +23,39 @@ class EventRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    
+    /* oder kürzer, count gibt es schon als Funktion von ServiceEntityRepository
+    public function countAllEvents(): int
+    {
+        return $this->count([]);
+    }
+    */
 
 
-    public function findUpcomingEvents()
+    public function findUpcomingEvents(): array
     {
     return $this->createQueryBuilder('e')
-    
         ->where('e.startsAt >= :today')
         ->setParameter('today', new \DateTime())
         ->orderBy('e.startsAt', 'ASC')
         ->getQuery()
         ->getResult();
     }
+    /* mit DQL würde es so ausschauen
+    public function findUpcomingEvents(): array
+    {
+        return $this->getEntityManager()
+            ->createQuery('
+                SELECT e
+                FROM App\Entity\Event e
+                WHERE e.startsAt >= :today
+                ORDER BY e.startsAt ASC
+            ')
+            ->setParameter('today', new \DateTime())
+            ->getResult();
+    }
+    */
+    
 
     //    /**
     //     * @return Event[] Returns an array of Event objects

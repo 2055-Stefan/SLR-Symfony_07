@@ -116,7 +116,6 @@ class Event
     public function removeAppointment(Appointment $appointment): static
     {
         if ($this->appointments->removeElement($appointment)) {
-            // set the owning side to null (unless already changed)
             if ($appointment->getEvent() === $this) {
                 $appointment->setEvent(null);
             }

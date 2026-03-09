@@ -9,7 +9,3 @@
 
 controllers:
     resource: routing.controllers
-events_current:
-    path: /events/current
-    controller: App\Controller\EventController::current
-    methods: [GET] 

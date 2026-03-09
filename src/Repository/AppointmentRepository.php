@@ -16,10 +16,6 @@ class AppointmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Appointment::class);
     }
 
-
-    // ===============================
-    // FILTER BY STATUS
-    // ===============================
     public function findByStatus(string $status): array
     {
         return $this->createQueryBuilder('a')
@@ -30,9 +26,6 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    // ===============================
-    // FILTER BY EVENT
-    // ===============================
     public function findByEvent(int $eventId): array
     {
         return $this->createQueryBuilder('a')
@@ -43,11 +36,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
 
-    // ===============================
-    // PAGINATION + SORTING
-    // ===============================
     public function findPaginated(int $page, int $limit, ?string $status = null): array {
 
         $qb = $this->createQueryBuilder('a');

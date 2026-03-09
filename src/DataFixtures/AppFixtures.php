@@ -13,7 +13,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $statuses = ['scheduled', 'confirmed', 'cancelled'];
-        $types = ['info', 'reminder', 'warning'];
+        // $types = ['info', 'reminder', 'warning'];
 
         // =====================================================
         // =================== EVENT 1 ==========================
@@ -189,6 +189,122 @@ class AppFixtures extends Fixture
             ->setType('info')
             ->setAppointment($appointment32);
         $manager->persist($notification322);
+
+
+        // =====================================================
+        // =================== EVENT 4 ==========================
+        // =====================================================
+
+        $event4 = (new Event())
+            ->setName('Digital Services Workshop')
+            ->setStartsAt(new \DateTimeImmutable('+4 days 09:00'))
+            ->setLocation('City Library - Seminar Room 2')
+            ->setDescription('A practical workshop where citizens learn how to use the online citizen portal and other digital public services.');
+        $manager->persist($event4);
+
+        $appointment41 = (new Appointment())
+            ->setTitle('Introduction to the Citizen Portal')
+            ->setStartsAt(new \DateTimeImmutable('+4 days 09:30'))
+            ->setEndsAt(new \DateTimeImmutable('+4 days 10:30'))
+            ->setLocation('Seminar Room 2')
+            ->setStatus($statuses[array_rand($statuses)])
+            ->setEvent($event4);
+        $manager->persist($appointment41);
+
+        $notification411 = (new Notification())
+            ->setMessage('Please bring a smartphone or laptop if available.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('info')
+            ->setAppointment($appointment41);
+        $manager->persist($notification411);
+
+        $notification412 = (new Notification())
+            ->setMessage('The workshop starts in 30 minutes.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('reminder')
+            ->setAppointment($appointment41);
+        $manager->persist($notification412);
+
+        $appointment42 = (new Appointment())
+            ->setTitle('Hands-on Session: Online Appointment Booking')
+            ->setStartsAt(new \DateTimeImmutable('+4 days 10:45'))
+            ->setEndsAt(new \DateTimeImmutable('+4 days 12:00'))
+            ->setLocation('Computer Area')
+            ->setStatus($statuses[array_rand($statuses)])
+            ->setEvent($event4);
+        $manager->persist($appointment42);
+
+        $notification421 = (new Notification())
+            ->setMessage('Support staff will be available for individual questions.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('info')
+            ->setAppointment($appointment42);
+        $manager->persist($notification421);
+
+        $notification422 = (new Notification())
+            ->setMessage('Please keep your login credentials secure.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('warning')
+            ->setAppointment($appointment42);
+        $manager->persist($notification422);
+
+
+        // =====================================================
+        // =================== EVENT 5 ==========================
+        // =====================================================
+
+        $event5 = (new Event())
+            ->setName('Environmental Action Day')
+            ->setStartsAt(new \DateTimeImmutable('+5 days 08:30'))
+            ->setLocation('Riverside Community Park')
+            ->setDescription('A local community event focused on environmental awareness, clean-up activities, and sustainability initiatives.');
+        $manager->persist($event5);
+
+        $appointment51 = (new Appointment())
+            ->setTitle('Park Clean-up Kickoff')
+            ->setStartsAt(new \DateTimeImmutable('+5 days 09:00'))
+            ->setEndsAt(new \DateTimeImmutable('+5 days 11:00'))
+            ->setLocation('Main Entrance')
+            ->setStatus($statuses[array_rand($statuses)])
+            ->setEvent($event5);
+        $manager->persist($appointment51);
+
+        $notification511 = (new Notification())
+            ->setMessage('Gloves and trash bags will be provided on site.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('info')
+            ->setAppointment($appointment51);
+        $manager->persist($notification511);
+
+        $notification512 = (new Notification())
+            ->setMessage('Please wear weather-appropriate clothing.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('reminder')
+            ->setAppointment($appointment51);
+        $manager->persist($notification512);
+
+        $appointment52 = (new Appointment())
+            ->setTitle('Sustainability Talk and Discussion')
+            ->setStartsAt(new \DateTimeImmutable('+5 days 11:30'))
+            ->setEndsAt(new \DateTimeImmutable('+5 days 12:30'))
+            ->setLocation('Park Pavilion')
+            ->setStatus($statuses[array_rand($statuses)])
+            ->setEvent($event5);
+        $manager->persist($appointment52);
+
+        $notification521 = (new Notification())
+            ->setMessage('Seating is limited, please arrive early.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('warning')
+            ->setAppointment($appointment52);
+        $manager->persist($notification521);
+
+        $notification522 = (new Notification())
+            ->setMessage('Questions from participants are welcome after the talk.')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setType('info')
+            ->setAppointment($appointment52);
+        $manager->persist($notification522);
 
         $manager->flush();
     }

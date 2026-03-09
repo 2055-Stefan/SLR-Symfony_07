@@ -21,7 +21,7 @@ docker compose exec database psql -U app -d app -c "\dt"
 In die Datenbank und Queries ausführen: docker compose exec database psql -U app
 	z.B.: SELECT * FROM user_activity;
 
-Wenn Tabelle löschen willst:
+Tabelle löschen:
 
 sudo rm -rf src/Entity/Test.php
 sudo rm -rf src/Repository/TestRepository.php
@@ -45,7 +45,7 @@ docker compose exec php php bin/console doctrine:database:create
 
 User Story 2: Erstellung der Doctrine-Entities
 
-docker compose exec php php bin/console make:entity --help ✓
+docker compose exec php php bin/console make:entity --help
 
 docker compose exec php php bin/console make:entity Appointment
 

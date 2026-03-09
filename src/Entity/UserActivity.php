@@ -17,7 +17,7 @@ class UserActivity
     #[ORM\Column(length: 255)]
     private ?string $action = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int

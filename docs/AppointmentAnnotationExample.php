@@ -7,59 +7,55 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: AppointmentRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=AppointmentRepository::class)
+ */
 class Appointment
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Please enter a title.')]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: 'The title must not be longer than {{ limit }} characters.'
-    )]
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Assert\NotNull(message: 'Please select a start date.')]
+    /**
+     * @ORM\Column(type=Types::DATE_IMMUTABLE)
+     */
     private ?\DateTimeImmutable $startsAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    #[Assert\GreaterThanOrEqual(
-        propertyPath: 'startsAt',
-        message: 'The end date must be the same as or later than the start date.'
-    )]
+    /**
+     * @ORM\Column(type=Types::DATE_IMMUTABLE, nullable=true)
+     */
     private ?\DateTimeImmutable $endsAt = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: 'The location must not be longer than {{ limit }} characters.'
-    )]
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private ?string $location = null;
 
-    #[ORM\Column(length: 30)]
-    #[Assert\NotBlank(message: 'Please select a status.')]
-    #[Assert\Choice(
-        choices: ['scheduled', 'confirmed', 'cancelled'],
-        message: 'Please choose a valid status.'
-    )]
+    /**
+     * @ORM\Column(type="string", length=30)
+     */
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'appointments')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: 'Please select an event.')]
+    /**
+     * @ORM\ManyToOne(targetEntity=Event::class, inversedBy="appointments")
+     * @ORM\JoinColumn(nullable=false)
+     */
     private ?Event $event = null;
 
     /**
      * @var Collection<int, Notification>
+     *
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="appointment")
      */
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'appointment')]
     private Collection $notifications;
 
     public function __construct()
