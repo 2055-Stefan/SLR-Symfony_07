@@ -16,16 +16,6 @@ class AppointmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Appointment::class);
     }
 
-    public function findByStatus(string $status): array
-    {
-        return $this->createQueryBuilder('a')
-            ->where('a.status = :status')
-            ->setParameter('status', $status)
-            ->orderBy('a.startsAt', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findPaginated(int $page, int $limit, ?string $status = null): array {
 
         $qb = $this->createQueryBuilder('a');
@@ -41,7 +31,6 @@ class AppointmentRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
 
     public function countAppointments(): int
     {

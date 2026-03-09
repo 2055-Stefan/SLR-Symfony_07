@@ -65,27 +65,6 @@ final class AppointmentController extends AbstractController
         ]);
     }
 
-
-    #[Route('/appointments/search', name: 'appointments_search')]
-    public function appointments(AppointmentRepository $repository, Request $request): Response
-    {
-        $status = $request->query->get('status');
-        $eventId = $request->query->get('eventId');
-        if ($status == "cancelled" || $status == "scheduled" || $status == "confirmed" ) {
-            $appointments = $repository->findByStatus($status);
-        }
-        if($status == ""){
-            $appointments = $repository->findAll();
-        }
-        if($eventId == 1) {
-             $appointments = $repository->findByEvent($eventId);
-        }
-
-        return $this->render('appointment/list.html.twig', [
-            'appointments' => $appointments
-        ]);
-    }
-
     #[Route('/appointment/{id}/edit', name: 'appointment_edit')]
     public function edit(Appointment $appointment, Request $request, EntityManagerInterface $em): Response {
 
