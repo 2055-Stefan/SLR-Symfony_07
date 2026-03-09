@@ -12,17 +12,26 @@ use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
 use App\Entity\UserActivity;
 
-
-
 final class AppointmentController extends AbstractController
 {
-    #[Route('/appointments', name: 'appointments_list')]
-    public function list(Request $request, AppointmentRepository $repository): Response {
+    #[Route('/appointments', name: 'appointments_list', methods: ['GET'])]
+    public function list(Request $request, AppointmentRepository $repository): Response
+    {
+        $page = max(1, $request->query->getInt('page', 1));
+        $status = $request->query->get('status');
+        $status = $status !== null && $status !== '' ? $status : null;
 
-        $appointments = $repository->findAll();
+        $limit = 2;
+
+        $appointments = $repository->findPaginated($page, $limit, $status);
+        $totalAppointments = $repository->countFiltered($status);
+        $totalPages = max(1, (int) ceil($totalAppointments / $limit));
 
         return $this->render('appointment/list.html.twig', [
-            'appointments' => $appointments
+            'appointments' => $appointments,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'currentStatus' => $status,
         ]);
     }
 

@@ -1,46 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Filter Appointment{% endblock %}
+{% block title %}Appointments{% endblock %}
 
 {% block body %}
     <h1>Appointments</h1>
 
     {% for appointment in appointments %}
-        <div>
+        <div style="margin-bottom: 10px;">
             {{ appointment.title }}
             ({{ appointment.status }})
             - {{ appointment.startsAt|date('Y-m-d H:i') }}
             - Event: {{ appointment.event.name }}
-            <a href="{{ path('appointment_edit', {id: appointment.id}) }}">Edit</a>
-            <form method="post"
-                action="{{ path('appointment_delete', {id: appointment.id}) }}"
-                style="display:inline"
-                onsubmit="return confirm('Delete appointment?');">
-                <button>Delete</button>
+
+            <a href="{{ path('appointment_edit', {'id': appointment.id}) }}">Edit</a>
+
+            <form
+                method="post"
+                action="{{ path('appointment_delete', {'id': appointment.id}) }}"
+                style="display: inline;"
+                onsubmit="return confirm('Möchten Sie diesen Termin wirklich löschen?');"
+            >
+                <button type="submit">Delete</button>
             </form>
         </div>
     {% else %}
         <p>No appointments found.</p>
     {% endfor %}
 
-    <div style="margin-bottom:20px">
+    <div style="margin-top: 20px; margin-bottom: 20px;">
+        <form method="get" action="{{ path('appointments_list') }}" style="display: inline;">
+            <button type="submit">All appointments</button>
+        </form>
 
-        <a href="{{ path('appointments_search', {status: ''}) }}">
-            <button>All appointments</button>
-        </a>
-        <a href="{{ path('appointments_search', {status: 'cancelled'}) }}">
-            <button>Cancelled appointments</button>
-        </a>
-        <a href="{{ path('appointments_search', {status: 'confirmed'}) }}">
-            <button>Confirmed appointments</button>
-        </a>
-        <a href="{{ path('appointments_search', {status: 'scheduled'}) }}">
-            <button>Scheduled appointments</button>
-        </a>
+        <form method="get" action="{{ path('appointments_list') }}" style="display: inline;">
+            <input type="hidden" name="status" value="cancelled">
+            <button type="submit">Cancelled appointments</button>
+        </form>
+
+        <form method="get" action="{{ path('appointments_list') }}" style="display: inline;">
+            <input type="hidden" name="status" value="confirmed">
+            <button type="submit">Confirmed appointments</button>
+        </form>
+
+        <form method="get" action="{{ path('appointments_list') }}" style="display: inline;">
+            <input type="hidden" name="status" value="scheduled">
+            <button type="submit">Scheduled appointments</button>
+        </form>
+    </div>        
+
+    <div style="margin-top: 20px;">
+        {% if currentPage > 1 %}
+            <a href="{{ path('appointments_list', {
+                'page': currentPage - 1,
+                'status': currentStatus
+            }) }}">
+                Previous
+            </a>
+        {% endif %}
+
+        <span style="margin: 0 10px;">
+            Page {{ currentPage }} of {{ totalPages }}
+        </span>
+
+        {% if currentPage < totalPages %}
+            <a href="{{ path('appointments_list', {
+                'page': currentPage + 1,
+                'status': currentStatus
+            }) }}">
+                Next
+            </a>
+        {% endif %}
     </div>
-    {% for appointment in appointments %}
-        
-    {% endfor %}
 {% endblock %}
-
-

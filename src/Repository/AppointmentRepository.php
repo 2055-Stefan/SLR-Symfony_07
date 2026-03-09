@@ -62,6 +62,19 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function countFiltered(?string $status = null): int
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)');
+
+        if ($status) {
+            $qb->andWhere('a.status = :status')
+            ->setParameter('status', $status);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
 
 
     //    /**
