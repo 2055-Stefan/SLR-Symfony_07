@@ -26,17 +26,6 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByEvent(int $eventId): array
-    {
-        return $this->createQueryBuilder('a')
-            ->join('a.event', 'e')
-            ->where('e.id = :eventId')
-            ->setParameter('eventId', $eventId)
-            ->orderBy('a.startsAt', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findPaginated(int $page, int $limit, ?string $status = null): array {
 
         $qb = $this->createQueryBuilder('a');
